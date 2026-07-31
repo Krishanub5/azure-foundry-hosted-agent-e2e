@@ -1,7 +1,8 @@
 # Microsoft Foundry Hosted Agent — End-to-End Azure Reference Solution
 
-This repository is a production-oriented reference implementation of an enterprise
-knowledge assistant built with:
+Production-ready Microsoft Foundry Hosted Agent reference architecture with Azure OpenAI, AI Search RAG, Cosmos DB, ACI, managed identity, private networking, Terraform, GitHub Actions, monitoring and automated tests. 
+
+This repository is a production-oriented reference implementation of an enterprise knowledge assistant built with:
 
 - Microsoft Foundry Agent Service Hosted Agents and the Responses protocol
 - Microsoft Agent Framework for Python
