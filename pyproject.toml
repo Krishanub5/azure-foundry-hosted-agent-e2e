@@ -1,0 +1,35 @@
+[project]
+name = "azure-foundry-hosted-agent-e2e"
+version = "1.0.0"
+description = "Enterprise reference implementation for Microsoft Foundry Hosted Agents."
+requires-python = ">=3.12,<3.14"
+
+[tool.ruff]
+target-version = "py312"
+line-length = 100
+exclude = [".terraform", ".venv", ".build"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "S"]
+ignore = ["S101"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**/*.py" = ["S105", "S106", "S107"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests", "apps/agent/tests", "apps/web/tests", "apps/ingestion/tests"]
+addopts = "-q"
+
+[tool.coverage.run]
+branch = true
+source = ["apps", "scripts"]
+omit = ["*/__init__.py"]
+
+[tool.coverage.report]
+exclude_also = [
+  "if __name__ == .__main__.:",
+  "raise NotImplementedError",
+]
+fail_under = 70
+show_missing = true
+skip_covered = true

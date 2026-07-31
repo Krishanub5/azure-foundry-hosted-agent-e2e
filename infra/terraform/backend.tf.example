@@ -1,0 +1,5 @@
+# Copy this file to backend.tf only when using the Azure Storage remote backend.
+# The deployment workflow does this automatically before `terraform init`.
+terraform {
+  backend "azurerm" {}
+}

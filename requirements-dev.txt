@@ -1,0 +1,11 @@
+-r apps/agent/requirements.txt
+-r apps/web/requirements.txt
+-r apps/ingestion/requirements.txt
+-r scripts/requirements.txt
+
+actionlint-py>=1.7.12.24,<2.0.0
+coverage>=7.10.0,<8.0.0
+pip-audit>=2.10.0,<3.0.0
+pyyaml>=6.0.2,<7.0.0
+ruff>=0.12.0,<1.0.0
+shellcheck-py>=0.11.0.1,<0.12.0

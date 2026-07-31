@@ -1,0 +1,37 @@
+subscription_id = "00000000-0000-0000-0000-000000000000"
+location        = "southeastasia"
+project_name    = "enterprise-agent"
+environment     = "prod"
+
+enable_private_networking    = true
+existing_firewall_private_ip = "10.0.1.4"
+
+vnet_address_space               = ["172.20.0.0/16"]
+agent_subnet_prefixes            = ["172.20.0.0/24"]
+private_endpoint_subnet_prefixes = ["172.20.1.0/24"]
+aci_subnet_prefixes              = ["172.20.2.0/24"]
+
+model_deployment_name = "gpt-5.4-mini"
+model_name            = "gpt-5.4-mini"
+model_version         = "2026-03-17"
+model_capacity        = 30
+
+embedding_deployment_name = "text-embedding-3-large"
+embedding_model_name      = "text-embedding-3-large"
+embedding_model_version   = "1"
+embedding_capacity        = 20
+vector_dimensions         = 3072
+
+agent_name        = "enterprise-knowledge-agent"
+search_index_name = "enterprise-knowledge"
+search_sku        = "standard"
+
+conversation_ttl_seconds = 7776000
+log_retention_days       = 90
+
+tags = {
+  owner               = "cloud-platform"
+  data_classification = "internal"
+  cost_center         = "replace-me"
+  business_service    = "enterprise-knowledge-assistant"
+}

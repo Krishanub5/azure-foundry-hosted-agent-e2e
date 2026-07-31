@@ -1,0 +1,25 @@
+subscription_id = "00000000-0000-0000-0000-000000000000"
+location        = "southeastasia"
+project_name    = "enterprise-agent"
+environment     = "dev"
+
+enable_private_networking = false
+
+model_deployment_name = "gpt-5.4-mini"
+model_name            = "gpt-5.4-mini"
+model_version         = "2026-03-17"
+model_capacity        = 10
+
+embedding_deployment_name = "text-embedding-3-large"
+embedding_model_name      = "text-embedding-3-large"
+embedding_model_version   = "1"
+embedding_capacity        = 10
+vector_dimensions         = 3072
+
+agent_name        = "enterprise-knowledge-agent"
+search_index_name = "enterprise-knowledge"
+
+tags = {
+  owner       = "cloud-platform"
+  cost_center = "replace-me"
+}

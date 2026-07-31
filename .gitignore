@@ -1,0 +1,39 @@
+# Local configuration and secrets
+.env
+.env.*
+!.env.example
+*.tfvars
+!*.tfvars.example
+*.tfplan
+infra/terraform/backend.tf
+
+# Terraform
+.terraform/
+terraform.tfstate
+terraform.tfstate.*
+crash.log
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+htmlcov/
+.venv/
+venv/
+
+# Build and deployment output
+.azure/
+.build/
+.cache/
+.deployment/
+dist/
+build/
+*.zip
+
+# Editors and OS
+.idea/
+.vscode/
+.DS_Store

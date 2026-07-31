@@ -1,0 +1,133 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  python:
+    name: Python ${{ matrix.python-version }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version:
+          - "3.12"
+          - "3.13"
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+          cache-dependency-path: |
+            requirements-dev.txt
+            apps/*/requirements.txt
+            scripts/requirements.txt
+
+      - name: Install validation dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install --requirement requirements-dev.txt
+
+      - name: Compile
+        run: python -m compileall -q apps scripts
+
+      - name: Lint and format
+        run: |
+          python -m ruff check apps scripts tests
+          python -m ruff format --check apps scripts tests
+
+      - name: Unit and repository-contract tests
+        run: |
+          python -m coverage run -m unittest discover -s tests -p 'test_*.py'
+          python -m coverage report
+
+      - name: Audit Python dependencies
+        if: matrix.python-version == '3.13'
+        run: python -m pip_audit --cache-dir .cache/pip-audit --progress-spinner off
+
+      - name: Import runtime modules
+        run: |
+          PYTHONPATH=apps/agent python -c "import main, prompt, rag, settings"
+          PYTHONPATH=apps/ingestion python -c "import chunking, extractors, index_schema, ingest, settings"
+          PYTHONPATH=apps/web python -c "import app.agent_client, app.conversation_store, app.identity, app.models, app.response_parser, app.settings, app.telemetry"
+
+      - name: Browser JavaScript syntax
+        run: node --check apps/web/static/app.js
+
+      - name: GitHub Actions syntax and expressions
+        run: actionlint -no-color -shellcheck= .github/workflows/*.yml
+
+  shell:
+    name: Shell
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install ShellCheck
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes shellcheck
+
+      - name: Validate scripts
+        run: |
+          for script in scripts/*.sh; do bash -n "$script"; done
+          shellcheck scripts/*.sh
+
+  terraform:
+    name: Terraform
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.10.5"
+
+      - name: Format
+        run: terraform -chdir=infra/terraform fmt -check -recursive
+
+      - name: Initialize without remote state
+        run: terraform -chdir=infra/terraform init -backend=false -input=false
+
+      - name: Validate providers and configuration
+        run: terraform -chdir=infra/terraform validate
+
+  containers:
+    name: Container ${{ matrix.component }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    strategy:
+      fail-fast: false
+      matrix:
+        component:
+          - agent
+          - web
+          - ingestion
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build Linux image
+        run: |
+          docker build \
+            --platform linux/amd64 \
+            --pull \
+            --tag "enterprise-knowledge-${{ matrix.component }}:ci" \
+            "apps/${{ matrix.component }}"

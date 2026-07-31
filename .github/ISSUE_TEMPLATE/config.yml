@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Microsoft Azure support
+    url: https://azure.microsoft.com/support/
+    about: Use for subscription, quota, regional availability, and Azure service incidents.
