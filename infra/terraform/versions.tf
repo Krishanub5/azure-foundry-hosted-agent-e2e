@@ -8,7 +8,7 @@ terraform {
     }
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = ">= 4.81.0, < 5.0.0"
+      version = ">= 4.81.0, < 5.4.1"
     }
     random = {
       source  = "hashicorp/random"
